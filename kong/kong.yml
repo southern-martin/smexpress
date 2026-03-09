@@ -1,0 +1,368 @@
+_format_version: "3.0"
+
+# =============================================================================
+# Global Plugins
+# =============================================================================
+
+plugins:
+  # ---------------------------------------------------------------------------
+  # JWT Authentication (global)
+  # Unauthenticated routes are exempted via consumer/route-level overrides
+  # ---------------------------------------------------------------------------
+  - name: jwt
+    enabled: true
+    config:
+      key_claim_name: iss
+      claims_to_verify:
+        - exp
+
+  # ---------------------------------------------------------------------------
+  # Rate Limiting (global default: 60 req/min)
+  # ---------------------------------------------------------------------------
+  - name: rate-limiting
+    config:
+      minute: 60
+      policy: local
+      fault_tolerant: true
+      hide_client_headers: false
+
+  # ---------------------------------------------------------------------------
+  # CORS (allow frontend origins)
+  # ---------------------------------------------------------------------------
+  - name: cors
+    config:
+      origins:
+        - "*"
+      methods:
+        - GET
+        - POST
+        - PUT
+        - PATCH
+        - DELETE
+        - OPTIONS
+        - HEAD
+      headers:
+        - Accept
+        - Authorization
+        - Content-Type
+        - X-Request-Id
+        - X-Tenant-Id
+        - X-Franchise-Id
+      exposed_headers:
+        - X-Request-Id
+      credentials: true
+      max_age: 3600
+
+  # ---------------------------------------------------------------------------
+  # Request Size Limiting (10 MB)
+  # ---------------------------------------------------------------------------
+  - name: request-size-limiting
+    config:
+      allowed_payload_size: 10
+      size_unit: megabytes
+
+  # ---------------------------------------------------------------------------
+  # Correlation ID
+  # ---------------------------------------------------------------------------
+  - name: correlation-id
+    config:
+      header_name: X-Request-Id
+      generator: uuid#counter
+      echo_downstream: true
+
+# =============================================================================
+# Services & Routes
+# =============================================================================
+
+services:
+  # ---------------------------------------------------------------------------
+  # Auth Service (port 8081)
+  # ---------------------------------------------------------------------------
+  - name: auth-service
+    url: http://auth-service:8081
+    routes:
+      - name: auth-routes
+        paths:
+          - /api/auth
+        strip_path: true
+
+  - name: auth-login
+    url: http://auth-service:8081
+    routes:
+      - name: auth-login-route
+        paths:
+          - /api/auth/login
+        strip_path: true
+        methods:
+          - POST
+    plugins:
+      - name: jwt
+        enabled: false
+      - name: rate-limiting
+        config:
+          minute: 10
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  - name: auth-refresh
+    url: http://auth-service:8081
+    routes:
+      - name: auth-refresh-route
+        paths:
+          - /api/auth/refresh
+        strip_path: true
+        methods:
+          - POST
+    plugins:
+      - name: jwt
+        enabled: false
+      - name: rate-limiting
+        config:
+          minute: 10
+          policy: local
+          fault_tolerant: true
+          hide_client_headers: false
+
+  # ---------------------------------------------------------------------------
+  # Config Service (port 8082)
+  # ---------------------------------------------------------------------------
+  - name: config-service
+    url: http://config-service:8082
+    routes:
+      - name: config-routes
+        paths:
+          - /api/config
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # User Service (port 8083)
+  # ---------------------------------------------------------------------------
+  - name: user-service
+    url: http://user-service:8083
+    routes:
+      - name: user-routes
+        paths:
+          - /api/users
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Franchise Service (port 8084)
+  # ---------------------------------------------------------------------------
+  - name: franchise-service
+    url: http://franchise-service:8084
+    routes:
+      - name: franchise-routes
+        paths:
+          - /api/franchises
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Customer Service (port 8085)
+  # ---------------------------------------------------------------------------
+  - name: customer-service
+    url: http://customer-service:8085
+    routes:
+      - name: customer-routes
+        paths:
+          - /api/customers
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Address Service (port 8086)
+  # ---------------------------------------------------------------------------
+  - name: address-service
+    url: http://address-service:8086
+    routes:
+      - name: address-routes
+        paths:
+          - /api/addresses
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Rating Service (port 8087)
+  # ---------------------------------------------------------------------------
+  - name: rating-service-quotes
+    url: http://rating-service:8087
+    routes:
+      - name: quotes-routes
+        paths:
+          - /api/quotes
+        strip_path: true
+
+  - name: rating-service-rate-sheets
+    url: http://rating-service:8087
+    routes:
+      - name: rate-sheets-routes
+        paths:
+          - /api/rate-sheets
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Carrier Service (port 8088)
+  # ---------------------------------------------------------------------------
+  - name: carrier-service
+    url: http://carrier-service:8088
+    routes:
+      - name: carrier-routes
+        paths:
+          - /api/carriers
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Shipment Service (port 8089)
+  # ---------------------------------------------------------------------------
+  - name: shipment-service
+    url: http://shipment-service:8089
+    routes:
+      - name: shipment-routes
+        paths:
+          - /api/shipments
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Document Service (port 8090)
+  # ---------------------------------------------------------------------------
+  - name: document-service
+    url: http://document-service:8090
+    routes:
+      - name: document-routes
+        paths:
+          - /api/documents
+        strip_path: true
+
+  - name: document-service-files
+    url: http://document-service:8090
+    routes:
+      - name: files-routes
+        paths:
+          - /api/files
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Notification Service (port 8091)
+  # ---------------------------------------------------------------------------
+  - name: notification-service
+    url: http://notification-service:8091
+    routes:
+      - name: notification-routes
+        paths:
+          - /api/notifications
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Ecommerce Service (port 8092)
+  # ---------------------------------------------------------------------------
+  - name: ecommerce-service
+    url: http://ecommerce-service:8092
+    routes:
+      - name: ecommerce-routes
+        paths:
+          - /api/ecommerce
+        strip_path: true
+
+  - name: ecommerce-webhooks
+    url: http://ecommerce-service:8092
+    routes:
+      - name: webhooks-routes
+        paths:
+          - /webhooks
+        strip_path: true
+    plugins:
+      - name: jwt
+        enabled: false
+
+  # ---------------------------------------------------------------------------
+  # Invoice Service (port 8093)
+  # ---------------------------------------------------------------------------
+  - name: invoice-service
+    url: http://invoice-service:8093
+    routes:
+      - name: invoice-routes
+        paths:
+          - /api/invoices
+        strip_path: true
+
+  - name: invoice-service-billing-runs
+    url: http://invoice-service:8093
+    routes:
+      - name: billing-runs-routes
+        paths:
+          - /api/billing-runs
+        strip_path: true
+
+  - name: invoice-service-adjustments
+    url: http://invoice-service:8093
+    routes:
+      - name: adjustments-routes
+        paths:
+          - /api/adjustments
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Reporting Service (port 8094)
+  # ---------------------------------------------------------------------------
+  - name: reporting-service
+    url: http://reporting-service:8094
+    routes:
+      - name: reports-routes
+        paths:
+          - /api/reports
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Payment Service (port 8095)
+  # ---------------------------------------------------------------------------
+  - name: payment-service
+    url: http://payment-service:8095
+    routes:
+      - name: payment-routes
+        paths:
+          - /api/payments
+        strip_path: true
+
+  - name: payment-callbacks
+    url: http://payment-service:8095
+    routes:
+      - name: payment-callbacks-route
+        paths:
+          - /api/payments/callbacks
+        strip_path: true
+    plugins:
+      - name: jwt
+        enabled: false
+
+  # ---------------------------------------------------------------------------
+  # Freight Service (port 8096)
+  # ---------------------------------------------------------------------------
+  - name: freight-service
+    url: http://freight-service:8096
+    routes:
+      - name: freight-routes
+        paths:
+          - /api/freight
+        strip_path: true
+
+  # ---------------------------------------------------------------------------
+  # Live Rating Service (port 8097)
+  # ---------------------------------------------------------------------------
+  - name: live-rating-service
+    url: http://live-rating-service:8097
+    routes:
+      - name: live-rating-routes
+        paths:
+          - /api/live-rating
+        strip_path: true
+
+  - name: live-rating-quote
+    url: http://live-rating-service:8097
+    routes:
+      - name: live-rating-quote-route
+        paths:
+          - /api/live-rating/quote
+        strip_path: true
+        methods:
+          - POST
+    plugins:
+      - name: jwt
+        enabled: false

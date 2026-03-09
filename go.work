@@ -1,0 +1,22 @@
+go 1.24.0
+
+use (
+	./pkg
+	./services/address-service
+	./services/auth-service
+	./services/carrier-service
+	./services/config-service
+	./services/customer-service
+	./services/document-service
+	./services/ecommerce-service
+	./services/franchise-service
+	./services/freight-service
+	./services/invoice-service
+	./services/live-rating-service
+	./services/notification-service
+	./services/payment-service
+	./services/rating-service
+	./services/reporting-service
+	./services/shipment-service
+	./services/user-service
+)

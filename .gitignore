@@ -1,5 +1,6 @@
 # Go
 bin/
+**/server
 *.exe
 *.test
 *.out
@@ -19,7 +20,7 @@ vendor/
 .env.*.local
 
 # Frontend
-frontend/node_modules/
+**/node_modules/
 frontend/apps/*/dist/
 frontend/packages/*/dist/
 frontend/.turbo/

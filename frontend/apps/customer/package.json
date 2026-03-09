@@ -1,0 +1,44 @@
+{
+  "name": "@smexpress/customer",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "lint": "eslint .",
+    "test": "vitest",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "react": "^18.3.0",
+    "react-dom": "^18.3.0",
+    "react-router-dom": "^6.23.0",
+    "@tanstack/react-query": "^5.50.0",
+    "@tanstack/react-table": "^8.19.0",
+    "react-hook-form": "^7.52.0",
+    "@hookform/resolvers": "^3.6.0",
+    "zod": "^3.23.0",
+    "zustand": "^4.5.0",
+    "axios": "^1.7.0",
+    "react-i18next": "^14.1.0",
+    "i18next": "^23.11.0",
+    "recharts": "^2.12.0",
+    "@smexpress/ui": "workspace:*",
+    "@smexpress/api-client": "workspace:*",
+    "@smexpress/auth": "workspace:*",
+    "@smexpress/config": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react-swc": "^3.7.0",
+    "autoprefixer": "^10.4.0",
+    "postcss": "^8.4.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.5.0",
+    "vite": "^5.3.0",
+    "vitest": "^2.0.0",
+    "@testing-library/react": "^16.0.0"
+  }
+}
