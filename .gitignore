@@ -1,0 +1,39 @@
+# Go
+bin/
+*.exe
+*.test
+*.out
+vendor/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Frontend
+frontend/node_modules/
+frontend/apps/*/dist/
+frontend/packages/*/dist/
+frontend/.turbo/
+frontend/apps/*/.turbo/
+
+# Docker
+docker-compose.override.yml
+
+# Generated
+api/openapi/*.gen.go
+api/proto/*.pb.go
+
+# Claude Code
+CLAUDE.local.md
+
+# OS
+Thumbs.db
