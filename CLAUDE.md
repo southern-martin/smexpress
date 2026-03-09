@@ -114,6 +114,16 @@ auth, db, httputil, logging, messaging, money, tenant, testutil, proto
 - Shared: @smexpress/ui, @smexpress/auth, @smexpress/api-client, @smexpress/config, @smexpress/i18n
 - Stack: React 18.3, Vite, TanStack Query, Zustand, Tailwind CSS, React Router 6
 
+## Git Workflow (Git Flow)
+
+- **Branches**: `main` (production), `develop` (integration), `feature/*`, `release/*`, `hotfix/*`
+- **Never push directly** to `main` or `develop`
+- **Feature work**: branch from `develop` → `feature/<name>` → merge to `develop` with `--no-ff`
+- **Releases**: branch from `develop` → `release/<version>` → merge to both `main` and `develop` with `--no-ff`, tag `main`
+- **Hotfixes**: branch from `main` → `hotfix/<name>` → merge to both `main` and `develop` with `--no-ff`, tag `main`
+- **Commit format**: `<type>(<scope>): <description>` — types: feat, fix, refactor, test, docs, chore
+- **Delete feature branches** after merge
+
 ## Key Files
 
 - Migration plan: `plans/migration-plan.md`
